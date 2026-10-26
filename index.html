@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JustDoIt</title>
+  <link rel="icon" href="img/JustDoIt.png">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="login-view" class="login-wrap">
+  <div class="card login-card">
+    <img src="img/JustDoIt.png" alt="JustDoIt" class="logo-large">
+    <h1>JustDoIt</h1>
+    <p class="muted">Ingresa tu nombre de usuario</p>
+    <form id="login-form">
+      <label for="login-username">Usuario</label>
+      <input id="login-username" type="text" required autofocus autocomplete="username" placeholder="ana_soto">
+      <button type="submit" class="btn primary block">Entrar</button>
+    </form>
+    <p class="muted small">¿No tienes usuario? <a href="#" id="show-register">Crear uno</a></p>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app-view" class="hidden">
+  <header class="topbar">
+    <div class="brand"><img src="img/JustDoIt.png" alt="JustDoIt"><span>JustDoIt</span></div>
+    <nav>
+      <button class="tab active" data-tab="tasks">Tareas</button>
+      <button class="tab" data-tab="users">Usuarios</button>
+      <button class="tab" data-tab="log">Consola API</button>
+    </nav>
+    <div class="session">
+      <span id="session-label"></span>
+      <button id="logout" class="btn ghost">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Tareas -->
+    <div id="tab-tasks" class="tab-panel">
+      <div class="toolbar">
+        <h2>Tareas</h2>
+        <label class="inline hidden" id="owner-wrap">Usuario:
+          <select id="task-owner"></select>
+        </label>
+        <label class="inline">Estado:
+          <select id="task-filter">
+            <option value="">Todos</option>
+            <option value="PENDING">Pendiente</option>
+            <option value="INPROGRESS">En progreso</option>
+            <option value="DONE">Hecha</option>
+          </select>
+        </label>
+        <span class="spacer"></span>
+        <button id="task-refresh" class="btn ghost">Recargar</button>
+        <button id="task-auto" class="btn secondary">Generar aleatoria</button>
+        <button id="task-new" class="btn primary">Nueva tarea</button>
+      </div>
+      <div id="task-list" class="grid"></div>
+    </div>
+
+    <!-- Usuarios -->
+    <div id="tab-users" class="tab-panel hidden">
+      <div class="toolbar">
+        <h2>Usuarios</h2>
+        <span class="spacer"></span>
+        <button id="user-refresh" class="btn ghost">Recargar</button>
+        <button id="user-new" class="btn primary">Nuevo usuario</button>
+      </div>
+      <div class="card table-wrap">
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>Email</th><th>Tipo</th><th>Creado</th><th></th></tr>
+          </thead>
+          <tbody id="user-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div id="tab-log" class="tab-panel hidden">
+      <div class="toolbar">
+        <h2>Consola API</h2>
+        <span class="spacer"></span>
+        <button id="log-clear" class="btn ghost">Limpiar</button>
+      </div>
+      <div id="log" class="card log"></div>
+    </div>
+  </main>
+</section>
+
+<!-- Dialogo usuario -->
+<dialog id="user-dialog">
+  <form id="user-form" method="dialog">
+    <h3 id="user-dialog-title">Usuario</h3>
+    <label for="uf-username">Usuario (userName)</label>
+    <input id="uf-username" required>
+    <label for="uf-name">Nombre</label>
+    <input id="uf-name">
+    <label for="uf-email">Email</label>
+    <input id="uf-email" type="email">
+    <label for="uf-type">Tipo</label>
+    <select id="uf-type">
+      <option value="REGULAR">REGULAR</option>
+      <option value="ADMIN">ADMIN</option>
+    </select>
+    <div class="actions">
+      <button type="button" class="btn ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn primary">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Dialogo tarea -->
+<dialog id="task-dialog">
+  <form id="task-form" method="dialog">
+    <h3 id="task-dialog-title">Tarea</h3>
+    <label for="tf-description">Descripción (mín. 3 caracteres)</label>
+    <textarea id="tf-description" rows="3" minlength="3" required></textarea>
+    <label for="tf-status">Estado</label>
+    <select id="tf-status">
+      <option value="PENDING">Pendiente</option>
+      <option value="INPROGRESS">En progreso</option>
+      <option value="DONE">Hecha</option>
+    </select>
+    <label for="tf-deadline">Fecha límite</label>
+    <input id="tf-deadline" type="date">
+    <div class="actions">
+      <button type="button" class="btn ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn primary">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
