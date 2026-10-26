@@ -36,7 +36,7 @@
 
   const fmtDate = (iso) => (iso ? new Date(iso).toLocaleString() : '-');
   const isAdmin = () => currentUser && currentUser.type === 'ADMIN';
-  const targetUserId = () => (isAdmin() ? Number($('task-owner').value) || currentUser.id : currentUser.id);
+  const targetUserId = () => currentUser.id;
 
   // ---------- Log ----------
   Api.onLog((e) => {
@@ -72,10 +72,11 @@
     $('login-view').classList.add('hidden');
     $('app-view').classList.remove('hidden');
     $('session-label').textContent = `${user.userName} (${user.type})`;
-    $('owner-wrap').classList.toggle('hidden', !isAdmin());
+    document.querySelectorAll('.tab[data-tab="users"], .tab[data-tab="log"]')
+      .forEach((b) => b.classList.toggle('hidden', !isAdmin()));
     showTab('tasks');
     guard(async () => {
-      await loadUsers();
+      if (isAdmin()) await loadUsers();
       await loadTasks();
     });
   }
@@ -90,6 +91,7 @@
 
   // ---------- Tabs ----------
   function showTab(name) {
+    if (name !== 'tasks' && !isAdmin()) name = 'tasks';
     document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
     document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('hidden', p.id !== 'tab-' + name));
   }
@@ -99,11 +101,6 @@
   async function loadUsers() {
     users = await Api.users.list();
     renderUsers();
-    const sel = $('task-owner');
-    const prev = sel.value || String(currentUser.id);
-    sel.textContent = '';
-    users.forEach((u) => sel.append(el('option', { value: u.id }, `${u.userName} (#${u.id})`)));
-    sel.value = users.some((u) => String(u.id) === prev) ? prev : String(currentUser.id);
   }
 
   function renderUsers() {
@@ -213,7 +210,6 @@
   $('task-new').onclick = () => openTaskDialog(null);
   $('task-refresh').onclick = () => guard(loadTasks);
   $('task-filter').onchange = renderTasks;
-  $('task-owner').onchange = () => guard(loadTasks);
   $('task-auto').onclick = () => guard(async () => {
     await Api.tasks.autogenerate(targetUserId());
     toast('Tarea aleatoria generada');
